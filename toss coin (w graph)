@@ -1,0 +1,30 @@
+#Activity 9
+import random
+from matplotlib import pyplot as plt
+
+n_values = [10, 100, 1000, 10000, 100000, 1000000]
+mean_values = []
+
+for n in n_values:
+    a = []
+    i = 0
+
+    while i < n:
+        x = random.randint(0, 1)
+        a.append(x)
+        i += 1
+
+    mean = sum(a) / n
+    mean_values.append(mean)
+
+print("Number of Coin Flips: ", n_values)
+print("Mean Number of Flips: ", mean_values)
+
+
+plt.scatter(n_values, mean_values)
+plt.title("Coin Flips ")
+plt.xlabel("Number of Coin Flips")
+plt.ylabel("Mean Number of Flips")
+plt.xscale('log')
+plt.xticks(n_values, n_values)
+plt.show()
