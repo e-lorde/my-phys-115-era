@@ -1,0 +1,33 @@
+%pylab inline
+import math
+
+v = int(input("Please enter initial velocity: "))
+angles = range(0, 90, 5)
+grav = 9.81
+hf = []
+
+def horizontal_trajectory(a):
+    range = (v ** 2 * math.sin(math.radians(2 * a))) / grav
+    return round(range, 2)
+
+def compute():
+    for a in angles:
+        result = horizontal_trajectory(a)
+        hf.append(result)
+
+compute()
+
+print("Angles: ", angles)
+print("Horizontal Range: ", hf)
+
+A = np.array(angles)
+B = np.array(hf)
+
+file = open("ranges.txt", "w")
+file.write("# Angle \t  # Horizontal Range" "\n")
+np.savetxt(file, np.transpose((A,B)), delimiter="\t")
+
+file.close()
+
+f = open("ranges.txt", "r")
+print(f.read())
