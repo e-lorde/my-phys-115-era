@@ -1,0 +1,41 @@
+%pylab inline
+import random
+
+max_n = int(input("Enter matrix size: "))
+c = np.zeros((max_n, max_n))
+mat = np.zeros((max_n, max_n))
+
+for i in range (0, max_n):
+    for j in range (0, max_n):
+        mat[i, j] = random.randint(0, 1)
+
+for i in range (1, max_n - 1):
+    for j in range (1, max_n - 1):
+        if mat[i, j] == mat[i+1, j]:
+            c[i, j] += 1
+        if mat[i, j] == mat[i-1, j]:
+            c[i, j] += 1
+        if mat[i, j] == mat[i+1, j+1]:
+            c[i, j] += 1
+        if mat[i, j] == mat[i+1, j-1]:
+            c[i, j] += 1
+        if mat[i, j] == mat[i-1, j+1]:
+            c[i, j] += 1
+        if mat[i, j] == mat[i-1, j-1]:
+            c[i, j] += 1
+        if mat[i, j] == mat[i, j+1]:
+            c[i, j] += 1
+        if mat[i, j] == mat[i, j-1]:
+            c[i, j] += 1
+
+print(mat)
+print("\n")
+print(c)
+        
+im = plt.imshow(mat, cmap="Greens")
+plt.colorbar(im)
+plt.show()
+
+im = plt.imshow(c, cmap="Blues")
+plt.colorbar(im)
+plt.show()
