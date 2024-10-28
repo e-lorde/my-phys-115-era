@@ -1,0 +1,28 @@
+%pylab inline
+import math
+import random
+
+radius = 10000
+n_points = int(input("Enter number of points: "))
+points = []
+
+def pythagorean(x, y):
+    x = random.randint(-radius, radius) 
+    y = random.randint(-radius, radius) 
+    r = math.sqrt(x ** 2 + y ** 2)
+    return r
+
+i = 0
+while i < n_points:
+    dot = pythagorean(x,y)
+    if dot <= radius:
+        points.append(dot)
+    i += 1
+
+
+count = len(points)
+pi = 4 * (count / n_points)
+print(pi)
+
+
+
