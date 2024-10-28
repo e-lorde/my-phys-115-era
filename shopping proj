@@ -1,0 +1,87 @@
+import random
+import numpy as np
+
+distance = 15
+num_agents = 1000
+marketprice = 2 #Adjust market prices
+properprice = 1
+
+
+def run_simulation(num_agents):
+    proper = []
+    market = []
+    
+    for _ in range(num_agents):
+        all_items = []
+        found = []
+        notfound = []
+        immediate = []
+        not_immediate = []
+        
+        def run_sim():
+            get_items()
+            price = round(random.uniform(0.5, 2.0), 3)
+            agent_locations = np.random.beta(a=13, b=7, size=num_agents) * distance
+            agent_reside = round(random.choice(agent_locations), 3)
+
+            if len(immediate) != 0: 
+                proper.append(1)
+            else:
+                market_cost = market_choice(agent_reside, price)
+                proper_cost = proper_choice(agent_reside, price)
+                if market_cost < proper_cost:
+                    market.append(1)
+                else:
+                    proper.append(1)
+
+        def get_items():
+            num_items()
+            for item in notfound:
+                assignment = random.randint(0, 1)
+                if assignment == 1:
+                    immediate.append(item)
+                else:
+                    not_immediate.append(item)
+
+        def num_items():
+            num = random.randint(0, 25)
+            x = 0
+            while x <= num:
+                availability = random.randint(1, 6) #Availability Parameter. Increase for less items to be available.
+                all_items.append(availability)  #Start with 2 with the range for all items available.
+                x += 1
+
+            for i in all_items:
+                if i == 1:
+                    notfound.append(i)
+                else:
+                    found.append(i)
+
+        def market_choice(agent_reside, price):
+            distance_m = abs(agent_reside - 10)
+            fare_v = fare(distance_m)
+            return marketprice + (price * fare_v)
+
+        def proper_choice(agent_reside, price):
+            distance_m = agent_reside
+            fare_v = fare(distance_m)
+            return properprice + (price * fare_v)
+
+        def fare(distance_m):
+            if distance_m <= 1:
+                return 0
+            elif 1 < distance_m <= 5:
+                return 1
+            elif 5 < distance_m <= 10:
+                return 1.5  
+            else: 
+                return 3
+
+        run_sim()
+
+    return len(proper), len(market)
+
+
+proper_count, market_count = run_simulation(num_agents)
+print("Proper count:", proper_count)
+print("Market count:", market_count)
