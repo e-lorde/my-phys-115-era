@@ -1,0 +1,87 @@
+%pylab inline
+import numpy as np
+import matplotlib.pyplot as plt
+import random
+
+empty_ratio = float(input("Enter empty ratio (decimal): "))
+
+threshold = 0.6
+max_n = 125
+row = column = max_n
+iterations = 500
+
+
+matrix = None
+
+def initial():
+    global matrix
+
+    num_empty = int(empty_ratio * max_n * max_n)
+    num_agents = max_n * max_n - num_empty
+    num_type_1 = num_type_2 = num_agents // 2
+
+    cells = [1] * num_type_1 + [2] * num_type_2 + [0] * num_empty
+
+    random.shuffle(cells)
+
+    matrix = np.array(cells).reshape((max_n, max_n))
+
+    print("Initial Matrix:")
+    print(matrix)
+    plt.imshow(matrix, cmap='Blues', interpolation='none')
+    plt.title("Matrix before Segregation")
+    plt.show()
+
+def neighbor_count():
+    unsatisfied_agents = []
+
+    for x in range(row):
+        for y in range(column):
+            agent = matrix[x, y]
+            if agent == 0:
+                continue
+
+            neighbors = []
+            for i in range(max(0, x-1), min(row, x+2)):
+                for j in range(max(0, y-1), min(column, y+2)):
+                    if (i, j) != (x, y):
+                        neighbors.append(matrix[i, j])
+
+            same_type_neighbors = neighbors.count(agent)
+            total_neighbors = len([n for n in neighbors if n != 0])
+
+            if total_neighbors == 0:
+                continue
+
+            similarity_ratio = same_type_neighbors / total_neighbors
+
+            if similarity_ratio < threshold:
+                unsatisfied_agents.append((x, y))
+
+    return unsatisfied_agents
+
+def movement(unsatisfied_agents):
+    empty_cells = [(x, y) for x in range(row) for y in range(column) if matrix[x, y] == 0]
+
+    for (x, y) in unsatisfied_agents:
+        if empty_cells:
+            new_x, new_y = random.choice(empty_cells)
+            matrix[new_x, new_y] = matrix[x, y]
+            matrix[x, y] = 0
+            empty_cells.remove((new_x, new_y))
+
+
+initial()
+for iteration in range(iterations):
+    unsatisfied_agents = neighbor_count()
+    if not unsatisfied_agents:
+        print(f"Equilibrium is Achieved at Iteration {iteration + 1}")
+        break
+    movement(unsatisfied_agents)
+
+
+print("Final Matrix:")
+print(matrix)
+plt.imshow(matrix, cmap='Blues', interpolation='none')
+plt.title("Matrix at Equilibrium after Segregation")
+plt.show()
