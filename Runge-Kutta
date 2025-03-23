@@ -1,0 +1,42 @@
+#Runge-Kutta Method (h = 0.1)
+%pylab inline
+import math
+from matplotlib import pyplot as plt
+
+h = 0.1
+x = 0
+y = 1
+
+def dydx (a,b):
+    return -2*b**2 + a*b + a**2   
+
+x_values = []
+y_values = []
+
+for i in range(0,20):   
+    k1 = h*dydx(x0, y);
+    k2 = h*dydx(x0 + 0.5*h, y + 0.5*k1);
+    k3 = h*dydx(x0 + 0.5*h, y + 0.5*k2);
+    k4 = h*dydx(x0 + h, y + k3);
+    
+ 
+    y = y + (1.0/6.0)*(k1 + 2*k2 + 2*k3 + k4);
+    
+    x = x + h
+
+    x_values.append(x)
+    y_values.append(y)
+
+
+print(f"{'x-values':<10}{'y-values':<10}")
+print("-" * 20)
+
+for x, y in zip(x_values, y_values):
+    print(f"{x:<10.4f}{y:<10.4f}")
+    
+plt.plot(x_values, y_values)
+plt.title("Runge-Kutta Method (h = 0.1)")
+plt.xlabel("x-values")
+plt.ylabel("y-values")
+plt.show()
+    
