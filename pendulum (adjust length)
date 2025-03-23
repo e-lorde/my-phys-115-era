@@ -1,0 +1,33 @@
+#adjust lengths, b=0
+import math
+import matplotlib.pyplot as plt
+import numpy as np
+from scipy.integrate import odeint
+
+def d0_dt(theta, t, b, m, g, l):
+    theta1 = theta[0]
+    theta2 = theta[1]
+    dtheta1_dt = theta2
+    dtheta2_dt = -(b / m * theta2) - (g / l * math.sin(theta1))
+    return [dtheta1_dt, dtheta2_dt]
+
+theta_0 = [0, 3]  
+t = np.linspace(0, 20, 150) 
+b, m, g = 0, 0.5, 9.81  
+
+lengths = [2, 3, 4]
+solutions = {}
+
+for l in lengths:
+    solution = odeint(d0_dt, theta_0, t, args=(b, m, g, l))
+    solutions[l] = solution[:, 0]  
+    
+plt.figure(figsize=(10, 6))
+for l, sol in solutions.items():
+    plt.plot(t, sol, label=f'Pendulum Length l = {l} m')
+
+plt.xlabel('Time (s)')
+plt.ylabel('Angular Position (rad)')
+plt.legend(loc='best')
+plt.grid(True)
+plt.show()
