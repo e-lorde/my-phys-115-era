@@ -1,0 +1,74 @@
+#Link number 3 code. with save files for animation
+import math
+import matplotlib.pyplot as plt
+import numpy as np
+import os
+from scipy.integrate import odeint
+
+def d0_dt(theta, t, b, m, g, l):
+    theta1 = theta[0]
+    theta2 = theta[1]
+    dtheta1_dt = theta2
+    dtheta2_dt = -(b / m * theta2) - (g / l * math.sin(theta1))
+    return [dtheta1_dt, dtheta2_dt]
+
+theta_0 = [0, 3]
+t = np.linspace(0, 20, 150)
+b, m, g, l = 0.5, 0.5, 9.81, 3
+
+solution = odeint(d0_dt, theta_0, t, args=(b, m, g, l))
+
+plt.plot(t, solution[:, 0], 'r-', linewidth=2, label=r'$\frac{d\theta_1}{dt} = \theta_2$')
+plt.plot(t, solution[:, 1], 'b--', linewidth=1.5, label=r'$\frac{d\theta_2}{dt} = -\frac{b}{m}\theta_2 - \frac{g}{l}\sin\theta_1$')
+plt.xlabel('Time (s)')
+plt.ylabel('Position')
+plt.grid(True)
+plt.title(f'Position-Time Graph : b = {b}, m = {m}, l = {l}')
+plt.legend(loc='best')
+plt.savefig('pendulum_plots.png')
+plt.show()
+
+sol_dis = solution[:, 0]
+x0, y0, l = 0, 0, 3
+
+for i, s in zip(t, sol_dis):
+    pos_x = x0 + l * math.sin(math.radians(180) + s)
+    pos_y = y0 + l * math.cos(math.radians(180) + s)
+
+    plt.figure()
+    plt.plot([-0.25, 0.25], [0, 0], linewidth=15)
+    plt.plot(x0, y0, marker='*', markersize=10)
+    plt.plot([x0, pos_x], [y0, pos_y], linestyle='--')
+    plt.plot(pos_x, pos_y, 'o', markersize=25)
+    plt.xlim([-4, 4])
+    plt.ylim([-5, 1])
+    plt.grid(True)
+    plt.title(f'Pendulum Animation : b = {b}, m = {m}, l = {l}')
+    plt.show()
+
+sol_dis = solution[:, 0]
+x0, y0 = 0, 0
+
+output_folder = "pendulum"
+if not os.path.exists(output_folder):
+    os.makedirs(output_folder)
+
+for i, s in enumerate(sol_dis):
+    pos_x = x0 + l * math.sin(math.radians(180) + s)
+    pos_y = y0 + l * math.cos(math.radians(180) + s)
+
+    plt.figure()
+    plt.plot([-0.25, 0.25], [0, 0], linewidth=15)  
+    plt.plot(x0, y0, marker='*', markersize=10) 
+    plt.plot([x0, pos_x], [y0, pos_y], linestyle='--')  
+    plt.plot(pos_x, pos_y, 'o', markersize=25)  
+    plt.xlim([-4, 4])
+    plt.ylim([-5, 1])
+    plt.grid(True)
+    plt.title(f'Pendulum Motion Frame {i+1}\nParameters: l={l}, b={b}, m={m}')
+
+    filename = os.path.join(output_folder, f'frame_{i+1:03d}.png')
+    plt.savefig(filename)
+    plt.close() 
+
+print(f"Frames saved in '{output_folder}' folder.")
